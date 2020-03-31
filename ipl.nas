@@ -15,15 +15,15 @@
 		DW		2880		 ;该磁盘的大小(必须是2880扇区)
 		DB		0xf0		 ;磁盘的种类(必须是0xf0)
 		DW		9			 ;FAT的长度(必须是9扇区)
-		DW		18			 ;
-		DW		2			 ;
-		DD		0			 ;
-		DD		2880		 ;
-		DB		0,0,0x29	 ;
-		DD		0xffffffff	 ;
-		DB		"HariboteOS" ;
-		DB		"FAT12   "	 ;
-		RESB	18
+		DW		18			 ;1个磁道(track)有几个扇区(必须是18)
+		DW		2			 ;磁头数（必须是2）
+		DD		0			 ;不使用分区，必须是0
+		DD		2880		 ;重写一次磁盘大小
+		DB		0,0,0x29	 ;意义不明，固定
+		DD		0xffffffff	 ;（可能是）卷标号码
+		DB		"HariboteOS" ;磁盘名称（11字节）
+		DB		"FAT12   "	 ;磁盘格式名称（8字节）
+		RESB	18			 ;先空出18字节
 
 entry:
 		mov AX,0
