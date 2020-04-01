@@ -1,5 +1,5 @@
 		
-		
+CYLS 	EQU 	10		;10个柱面		
 		ORG		0x7c00	;指明程序的装载地址
 ;记述用于标准FAT12格式的软盘	
 
@@ -30,8 +30,49 @@ entry:
 		mov SS,AX
 		mov SP,0x7c00
 		mov DS,AX
+		
+;读磁盘		
+		mov AX,0x0820
 		mov ES,AX
-		mov SI,msg
+		mov CH,0			 ;柱面0
+		mov DH,0			 ;磁头0
+		mov CL,2			 ;扇区2
+readloop:
+		mov SI,0			 ;记录失败次数的寄存器
+retry:
+		mov AH,0x02			 ;AH=0x02,读入磁盘
+		mov AL,1			 ;1个扇区
+		mov BX,0			 
+		mov DL,0x00			 ;A驱动器
+		INT 0x13			 ;调用磁盘BIOS
+		JNC	next			 ;没出错的话就跳转到next
+		ADD SI,1			 ;往SI加1
+		CMP SI,5			 ;比较SI与5   为啥要和5b比较
+		JAE error			 ;SI>=5时，跳转到error
+		mov AH,0x00
+		mov	DL,0x00			 ; A驱动器
+		INT 0x13			 ;重置驱动器
+		JMP retry
+next:
+		mov AX,ES			 ;把内存地址后移0x200
+		ADD AX,0x0020
+		mov ES,AX			 ;因为没有ADD ES,0x020指令
+		ADD CL,1			 ;往CL加1
+		CMP CL,18			 ;CL与18比较
+		JBE readloop		 ;如果CL<=18,跳转至readloop
+		mov CL,1
+		ADD DH,1
+		CMP DH,2
+		JB readloop			 ;如果DH<2,则跳转到readloop
+		mov DH,0
+		ADD CH,1
+		CMP CH,CYLS
+		JB readloop			 ;如果CH<CYLS,则跳转到readloop
+fin:
+		HLT					 ;让CPU停止，等待指令
+		JMP fin
+error:
+		mov SI,msg	
 putloop:
 		mov AL,[SI]
 		ADD SI,1
@@ -41,14 +82,13 @@ putloop:
 		mov BX,15			 ;指定字符颜色
 		INT 0x10			 ;调用显卡BIOS
 		JMP putloop
-fin:
-		HLT					 ;让CPU停止，等待指令
-		JMP fin
-msg:
+
+msg:  
 		DB 0x0a,0x0a		 
-		DW "中文"
+		DW "load error"
 		DB 0x0a
-		DW "F:\A1\tolset\z_tools\"
-		DB 0x0a
+		DB 0
 		RESB 0x7dfe-$
 		DB 0x55,0xaa
+		
+		
