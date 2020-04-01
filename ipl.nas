@@ -30,3 +30,25 @@ entry:
 		mov SS,AX
 		mov SP,0x7c00
 		mov DS,AX
+		mov ES,AX
+		mov SI,msg
+putloop:
+		mov AL,[SI]
+		ADD SI,1
+		CMP AL,0			 
+		JE fin
+		mov AH,0x0e			 ;显示一个文字   ？？？
+		mov BX,15			 ;指定字符颜色
+		INT 0x10			 ;调用显卡BIOS
+		JMP putloop
+fin:
+		HLT					 ;让CPU停止，等待指令
+		JMP fin
+msg:
+		DB 0x0a,0x0a		 
+		DW "中文"
+		DB 0x0a
+		DW "F:\A1\tolset\z_tools\"
+		DB 0x0a
+		RESB 0x7dfe-$
+		DB 0x55,0xaa
