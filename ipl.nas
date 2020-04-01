@@ -26,7 +26,7 @@
 		RESB	18			 ;先空出18字节
 
 entry:
-		mov AX,0
+		mov AX,0			 ;初始化寄存器
 		mov SS,AX
 		mov SP,0x7c00
 		mov DS,AX
