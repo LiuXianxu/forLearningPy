@@ -8,3 +8,6 @@
 # export FLASK_ENV=development
 # 设置调试模式 
 # export FLASK_DEBUG =1
+# 合并使用
+#export FLASK_DEBUG=1 FLASK_APP=flaskr.py
+#
