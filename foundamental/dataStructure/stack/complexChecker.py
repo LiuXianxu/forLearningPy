@@ -25,3 +25,5 @@ def parChecker(symbolString):
 #print(parChecker('(sdas0)(sdaks;d)(dsada)((()))))ds9a'))
 #print(parChecker('(123(2((123)))))((3((3))))4(((5(6))))7((8((()9)))0)()'))
 print(parChecker("12(1)2{()}0{(2)[2]()}2()"))
+print(parChecker('{{([][])}()}'))
+print(parChecker('[{()]'))
